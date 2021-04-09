@@ -29,7 +29,7 @@ namespace ProvaPraticaUCDB.Models
 
         public void ApplyDiscount(double value)
         {
-            if (DueDate >= new DateTime)
+            if (DueDate >= new DateTime())
             {
                 Value -= value;
             }
