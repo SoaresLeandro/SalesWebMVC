@@ -14,6 +14,7 @@ namespace ProvaUCDB.Data
         {
         }
 
-        public DbSet<ProvaUCDB.Models.Product> Product { get; set; }
+        public DbSet<Product> Product { get; set; }
+        public DbSet<Order> Order { get; set; }
     }
 }
