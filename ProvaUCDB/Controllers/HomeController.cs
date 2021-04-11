@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ProvaPraticaUCDB.Models;
+using ProvaUCDB.Models;
 
-namespace ProvaPraticaUCDB.Controllers
+namespace ProvaUCDB.Controllers
 {
     public class HomeController : Controller
     {

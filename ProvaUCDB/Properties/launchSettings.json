@@ -3,8 +3,8 @@
     "windowsAuthentication": false, 
     "anonymousAuthentication": true, 
     "iisExpress": {
-      "applicationUrl": "http://localhost:53115",
-      "sslPort": 44379
+      "applicationUrl": "http://localhost:23995",
+      "sslPort": 44335
     }
   },
   "profiles": {
@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "ProvaPraticaUCDB": {
+    "ProvaUCDB": {
       "commandName": "Project",
       "launchBrowser": true,
       "applicationUrl": "https://localhost:5001;http://localhost:5000",

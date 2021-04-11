@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProvaPraticaUCDB", "ProvaPraticaUCDB\ProvaPraticaUCDB.csproj", "{DC7BA384-2555-4990-B1D7-A6794E415B5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProvaUCDB", "ProvaUCDB\ProvaUCDB.csproj", "{18A12B44-B100-496D-9877-D78EFE4229DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DC7BA384-2555-4990-B1D7-A6794E415B5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC7BA384-2555-4990-B1D7-A6794E415B5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC7BA384-2555-4990-B1D7-A6794E415B5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC7BA384-2555-4990-B1D7-A6794E415B5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18A12B44-B100-496D-9877-D78EFE4229DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18A12B44-B100-496D-9877-D78EFE4229DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18A12B44-B100-496D-9877-D78EFE4229DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18A12B44-B100-496D-9877-D78EFE4229DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F88E3A15-A2E9-4E5B-9F75-505AFD05E1A5}
+		SolutionGuid = {3792FC97-874F-4EA0-8600-AFF8A4D7BCDE}
 	EndGlobalSection
 EndGlobal
