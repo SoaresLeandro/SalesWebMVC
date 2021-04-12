@@ -19,53 +19,69 @@ namespace ProvaPraticaUCDB.Services
             _context = context;
         }
 
-        public List<Order> FindAll()
+        public async Task<List<Order>> FindAllAsync()
         {
-            return _context.Order.OrderBy(x => x.DueDate).ToList();
+            return await _context.Order.OrderBy(x => x.DueDate).ToListAsync();
         }
 
-        public void Insert(Order order)
+        public async Task InsertAsync(Order order)
         {
-            if (order.DueDate <= DateTime.Now)
-            {
-                order.Status = OrderStatus.Expired;
-            } else
-            {
-                order.Status = OrderStatus.Valid;
-            }
+            calculateExpiration(order);
 
             _context.Add(order);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public Order FindById(int id)
+        public async Task<Order> FindByIdAsync(int id)
         {
-            return _context.Order.FirstOrDefault(obj => obj.Id == id);
+            return await _context.Order.FirstOrDefaultAsync(obj => obj.Id == id);
         }
 
-        public void Remove(int id)
+        public async Task RemoveAsync(int id)
         {
-            var obj = _context.Order.Find(id);
+            var obj = await _context.Order.FindAsync(id);
 
             _context.Order.Remove(obj);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Order order)
+        public async Task UpdateAsyn(Order order)
         {
-            if (!_context.Order.Any(x => x.Id == order.Id))
+            bool hasAny = await _context.Order.AnyAsync(x => x.Id == order.Id);
+
+            if (!hasAny)
             {
                 throw new NotFoundException("Este pedido não foi encontrado");
             }
 
             try
             {
+                calculateExpiration(order);
                 _context.Update(order);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException e)
             {
                 throw new DbConcurrencyException(e.Message);
+            }
+        }
+
+        public void calculateExpiration(Order order)
+        {
+            DateTime now = DateTime.Today;
+            TimeSpan ts = now.Subtract(order.DueDate);
+
+            if (ts.Days >= 0)
+            {
+                order.Status = OrderStatus.Expired;
+            }
+            else if (ts.Days < 0 && ts.Days >= -3)
+            {
+                order.Status = OrderStatus.CloseExpiration;
+            }
+            else if (ts.Days < -3)
+            {
+                order.Status = OrderStatus.Valid;
             }
         }
     }

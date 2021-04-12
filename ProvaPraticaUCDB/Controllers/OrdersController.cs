@@ -23,22 +23,22 @@ namespace ProvaPraticaUCDB.Controllers
         }
 
         // GET: Orders
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _orderService.FindAll();
+            var list = await _orderService.FindAllAsync();
             
             return View(list);
         }
 
         // GET: Orders/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
             }
 
-            var order = _orderService.FindById(id.Value);
+            var order = await _orderService.FindByIdAsync(id.Value);
 
             if (order == null)
             {
@@ -57,21 +57,21 @@ namespace ProvaPraticaUCDB.Controllers
         // POST: Orders/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Order order)
+        public async Task<IActionResult> Create(Order order)
         {
-            _orderService.Insert(order);
+            await _orderService.InsertAsync(order);
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Orders/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
             }
 
-            var order = _orderService.FindById(id.Value);
+            var order = await _orderService.FindByIdAsync(id.Value);
 
             if (order == null)
             {
@@ -84,7 +84,7 @@ namespace ProvaPraticaUCDB.Controllers
         // POST: Orders/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Order order)
+        public async Task<IActionResult> Edit(int id, Order order)
         {
             if (id != order.Id)
             {
@@ -93,7 +93,7 @@ namespace ProvaPraticaUCDB.Controllers
 
             try
             {
-                _orderService.Update(order);
+                await _orderService.UpdateAsyn(order);
                 return RedirectToAction(nameof(Index));
             }
             catch (ApplicationException e)
@@ -103,14 +103,14 @@ namespace ProvaPraticaUCDB.Controllers
         }
 
         // GET: Orders/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
             }
 
-            var order = _orderService.FindById(id.Value);
+            var order = await _orderService.FindByIdAsync(id.Value);
 
             if (order == null)
             {
@@ -123,9 +123,9 @@ namespace ProvaPraticaUCDB.Controllers
         // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _orderService.Remove(id);
+            await _orderService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -140,9 +140,5 @@ namespace ProvaPraticaUCDB.Controllers
             return View(ViewModel);
         }
 
-       /* private bool OrderExists(int id)
-        {
-            return _context.Order.Any(e => e.Id == id);
-        }*/
     }
 }
