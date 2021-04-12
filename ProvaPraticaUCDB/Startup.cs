@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using ProvaPraticaUCDB.Data;
+using ProvaPraticaUCDB.Services;
 
 namespace ProvaPraticaUCDB
 {
@@ -38,6 +39,8 @@ namespace ProvaPraticaUCDB
 
             services.AddDbContext<ProvaPraticaUCDBContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ProvaPraticaUCDBContext")));
+
+            services.AddScoped<OrderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

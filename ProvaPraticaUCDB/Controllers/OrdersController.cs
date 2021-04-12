@@ -7,34 +7,38 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProvaPraticaUCDB.Data;
 using ProvaPraticaUCDB.Models;
+using ProvaPraticaUCDB.Services;
+using ProvaPraticaUCDB.Services.Exceptions;
 
 namespace ProvaPraticaUCDB.Controllers
 {
     public class OrdersController : Controller
     {
-        private readonly ProvaPraticaUCDBContext _context;
+        private readonly OrderService _orderService;
 
-        public OrdersController(ProvaPraticaUCDBContext context)
+        public OrdersController(OrderService orderService)
         {
-            _context = context;
+            _orderService = orderService;
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Order.ToListAsync());
+            var list = _orderService.FindAll();
+
+            return View(list);
         }
 
         // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Order
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var order = _orderService.FindById(id.Value);
+
             if (order == null)
             {
                 return NotFound();
@@ -50,104 +54,89 @@ namespace ProvaPraticaUCDB.Controllers
         }
 
         // POST: Orders/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NameProduct,Value,DueDate,Status")] Order order)
+        public IActionResult Create(Order order)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(order);
+            _orderService.Insert(order);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Order.FindAsync(id);
+            var order = _orderService.FindById(id.Value);
+
             if (order == null)
             {
                 return NotFound();
             }
+
             return View(order);
         }
 
         // POST: Orders/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NameProduct,Value,DueDate,Status")] Order order)
+        public IActionResult Edit(int id, Order order)
         {
             if (id != order.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _orderService.Update(order);
                 return RedirectToAction(nameof(Index));
             }
-            return View(order);
-        }
-
-        // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
+            catch (NotFoundException)
             {
                 return NotFound();
             }
-
-            var order = await _context.Order
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
-        }
-
-        // POST: Orders/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var order = await _context.Order.FindAsync(id);
-            _context.Order.Remove(order);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool OrderExists(int id)
-        {
-            return _context.Order.Any(e => e.Id == id);
+            
         }
     }
+
+    // GET: Orders/Delete/5
+    public IActionResult Delete(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var order = _orderService.FindById(id.Value);
+
+        if (order == null)
+        {
+            return NotFound();
+        }
+
+        return View(order);
+    }
+
+    // POST: Orders/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteConfirmed(int id)
+    {
+        _orderService.Remove(id);
+        return RedirectToAction(nameof(Index));
+    }
+
+    private bool OrderExists(int id)
+    {
+        return _context.Order.Any(e => e.Id == id);
+    }
+}
 }
