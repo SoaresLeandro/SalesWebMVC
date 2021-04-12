@@ -33,12 +33,5 @@ namespace ProvaPraticaUCDB.Models
             Status = status;
         }
 
-        public void ApplyDiscount(double value)
-        {
-            if (DueDate <= DateTime.Now)
-            {
-                Value -= value;
-            }
-        }
     }
 }

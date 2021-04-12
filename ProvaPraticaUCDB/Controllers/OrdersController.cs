@@ -10,6 +10,7 @@ using ProvaPraticaUCDB.Data;
 using ProvaPraticaUCDB.Models;
 using ProvaPraticaUCDB.Services;
 using ProvaPraticaUCDB.Services.Exceptions;
+using ProvaPraticaUCDB.Models.Enums;
 
 namespace ProvaPraticaUCDB.Controllers
 {
@@ -26,7 +27,7 @@ namespace ProvaPraticaUCDB.Controllers
         public async Task<IActionResult> Index()
         {
             var list = await _orderService.FindAllAsync();
-            
+
             return View(list);
         }
 
@@ -129,9 +130,56 @@ namespace ProvaPraticaUCDB.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Discount(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
+            }
+
+            var order = await _orderService.FindByIdAsync(id.Value);
+
+            if (order == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Pedido não encontrado" });
+            }
+
+            return View(order);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Discount(int id, Order order)
+        {
+            if (id != order.Id)
+            {
+                return RedirectToAction(nameof(Error), new { message = "O Id informado não corresponde ao Id do Pedido." });
+            }
+
+            try
+            {
+                int applyDiscount = await _orderService.ApplyDiscountAsync(order);
+
+                if (applyDiscount == 0)
+                {
+                    return RedirectToAction(nameof(Error), new { message = "Pedidos vencidos não podem receber desconto."});
+                }
+                if (applyDiscount == 1)
+                {
+                    return RedirectToAction(nameof(Error), new { message = "O valor de desconto não pode ser maior que 30%." });
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (ApplicationException e)
+            {
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            }
+
+        }
         public IActionResult Error(string message)
         {
-            var ViewModel = new ErrorViewModel 
+            var ViewModel = new ErrorViewModel
             {
                 Message = message,
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier

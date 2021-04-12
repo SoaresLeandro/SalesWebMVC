@@ -84,5 +84,36 @@ namespace ProvaPraticaUCDB.Services
                 order.Status = OrderStatus.Valid;
             }
         }
+
+        public async Task<int> ApplyDiscountAsync(Order order)
+        {
+            calculateExpiration(order);
+
+            if (order.Status == OrderStatus.Expired)
+            {
+                return 0;
+            }
+            
+            try {
+                Order orderSearch = await _context.Order.FindAsync(order.Id);
+                double value = orderSearch.Value;
+                double MaximumDiscount = value *= 0.3;
+
+                if (order.Value > MaximumDiscount)
+                {
+                    return 1;
+                }
+
+                orderSearch.Value -= order.Value;
+
+                _context.Update(orderSearch);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                throw new DbConcurrencyException(e.Message);
+            }
+            return 2;
+        }
     }
 }
