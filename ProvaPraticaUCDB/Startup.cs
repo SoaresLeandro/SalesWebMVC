@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using ProvaPraticaUCDB.Data;
 using ProvaPraticaUCDB.Services;
+using System.Globalization;
 
 namespace ProvaPraticaUCDB
 {
