@@ -9,11 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using ProvaUCDB.Data;
-using ProvaUCDB.Services;
 
-namespace ProvaUCDB
+namespace ProvaPraticaUCDB
 {
     public class Startup
     {
@@ -36,12 +33,6 @@ namespace ProvaUCDB
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.AddDbContext<ProvaUCDBContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ProvaUCDBContext")));
-
-            services.AddScoped<OrderService>();
-            services.AddScoped<ProductService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

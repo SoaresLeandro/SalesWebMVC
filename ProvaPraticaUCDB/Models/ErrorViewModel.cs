@@ -1,6 +1,6 @@
 using System;
 
-namespace ProvaUCDB.Models
+namespace ProvaPraticaUCDB.Models
 {
     public class ErrorViewModel
     {
