@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace ProvaPraticaUCDB.Controllers
         public IActionResult Index()
         {
             var list = _orderService.FindAll();
-
+            
             return View(list);
         }
 
@@ -34,14 +35,14 @@ namespace ProvaPraticaUCDB.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
             }
 
             var order = _orderService.FindById(id.Value);
 
             if (order == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Pedido não encontrado" });
             }
 
             return View(order);
@@ -67,14 +68,14 @@ namespace ProvaPraticaUCDB.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
             }
 
             var order = _orderService.FindById(id.Value);
 
             if (order == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Pedido não encontrado" });
             }
 
             return View(order);
@@ -87,7 +88,7 @@ namespace ProvaPraticaUCDB.Controllers
         {
             if (id != order.Id)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "O Id informado não corresponde ao Id do Pedido" });
             }
 
             try
@@ -95,48 +96,53 @@ namespace ProvaPraticaUCDB.Controllers
                 _orderService.Update(order);
                 return RedirectToAction(nameof(Index));
             }
-            catch (DbConcurrencyException)
+            catch (ApplicationException e)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
-            catch (NotFoundException)
+        }
+
+        // GET: Orders/Delete/5
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não fornecido" });
             }
-            
-        }
-    }
 
-    // GET: Orders/Delete/5
-    public IActionResult Delete(int? id)
-    {
-        if (id == null)
+            var order = _orderService.FindById(id.Value);
+
+            if (order == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Pedido não encontrado" });
+            }
+
+            return View(order);
+        }
+
+        // POST: Orders/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
         {
-            return NotFound();
+            _orderService.Remove(id);
+            return RedirectToAction(nameof(Index));
         }
 
-        var order = _orderService.FindById(id.Value);
-
-        if (order == null)
+        public IActionResult Error(string message)
         {
-            return NotFound();
+            var ViewModel = new ErrorViewModel 
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+
+            return View(ViewModel);
         }
 
-        return View(order);
+       /* private bool OrderExists(int id)
+        {
+            return _context.Order.Any(e => e.Id == id);
+        }*/
     }
-
-    // POST: Orders/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public IActionResult DeleteConfirmed(int id)
-    {
-        _orderService.Remove(id);
-        return RedirectToAction(nameof(Index));
-    }
-
-    private bool OrderExists(int id)
-    {
-        return _context.Order.Any(e => e.Id == id);
-    }
-}
 }
