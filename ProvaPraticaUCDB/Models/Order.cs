@@ -17,6 +17,7 @@ namespace ProvaPraticaUCDB.Models
         public double Value { get; set; }
         [Display(Name = "Data de Vencimento")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime DueDate { get; set; }
         public OrderStatus Status { get; set; }
 
